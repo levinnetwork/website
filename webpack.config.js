@@ -1,7 +1,9 @@
 const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin') // 自动清除沉余js
 const HtmlWebpackPlugin = require('html-webpack-plugin') // 自动生成 html 插件
+const CopyPlugin = require('copy-webpack-plugin') // 自动生成 html 插件
 const { SourceMapDevToolPlugin } = require("webpack");
+const webpack = require('webpack');
 
 module.exports = {
     entry: './src/index.js', //入口文件
@@ -84,10 +86,10 @@ module.exports = {
                     options: {}
                   }
                 ]
-            }
-        ]
+            },
+        ],
     },
-    plugins:[ // 存放插件
+    plugins:[
         new HtmlWebpackPlugin({
             template: './src/index.html', // 模板
             filename: 'index.html', // 默认也是index.html
@@ -98,6 +100,18 @@ module.exports = {
         new SourceMapDevToolPlugin({
             filename: "[file].map"
         }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+        }),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname,'./assets/js'),
+                    to: path.resolve(__dirname,'./dist/assets/js')
+                }
+            ]
+        })
     ],
     devServer:{ // 开发服务器配置
         port: 9000, // 端口号
